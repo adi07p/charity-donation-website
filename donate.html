@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    input[type="text"],
+    input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    #qrCodeContainer {
+        text-align: center;
+    }
+    img.qr-code {
+        display: block;
+        margin: 20px auto;
+        max-width: 100%;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Make a Donation</h2>
+    <form id="donationForm">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" oninput="this.value = this.value.toUpperCase()" required>
+        <label for="amount">Enter Donation Amount:</label>
+        <input type="number" id="amount" name="amount" placeholder="Enter amount in INR" required>
+        <button type="button" onclick="generatePayment()">Pay Direct or Using QR</button>
+    </form>
+    <div id="qrCodeContainer" style="display: none;">
+        <img id="qrCode" class="qr-code" src="" alt="QR Code">
+    </div>
+</div>
+
+<script>
+    function generatePayment() {
+        var name = document.getElementById("name").value.toUpperCase(); // Convert to uppercase
+        var amount = document.getElementById("amount").value;
+        var txnId = Date.now(); // Generating a unique transaction ID
+        var upiLink = "upi://pay?pa=paytmqr2810050501011ethcbf8yo19@paytm&pn=Padhai%20Karo&am=" + amount + "&tn=" + encodeURIComponent(name + txnId) + "&cu=INR";
+        var qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(upiLink) + "&size=300x300";
+        document.getElementById("qrCode").src = qrCodeUrl;
+        document.getElementById("qrCodeContainer").style.display = "block";
+        window.alert("Please take a screenshot of the transaction ID: " + name + txnId);
+        window.location.href = upiLink;
+    }
+</script>
+</body>
+</html>
